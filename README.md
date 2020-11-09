@@ -7,3 +7,6 @@ Group Members:
 * Navras Kamal   (navras)
 * Sang Le        (sqle)
 * Jill Zheng     (jzzheng)
+
+
+To run game type python3 main.py in terminal
