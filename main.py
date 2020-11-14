@@ -2,11 +2,11 @@
 import pygame
 import sys
 from Objects import board
+from Objects import uttt_solver as solver
 #initialize game window and board
 pygame.init()
 gameBoard = board.Board(False)
-
-
+gameSolver = solver.Solver()
 
 def main():
     # Create a game window
@@ -42,7 +42,9 @@ def main():
                             player ='X'
                     else:
                         print("Illegal move, try again")
-
+                elif event.button == 3: #right mouse button
+                    gameSolver.step(gameBoard, player, pygame, game_window)
+                    player = 'X' if player == 'O' else 'O'
 
         # Update our display
         pygame.display.update()
