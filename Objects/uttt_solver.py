@@ -15,7 +15,7 @@ class Solver:
         # If you return to your original number, break (board is filled)
         if (board.gameFinished):
             if (board.getWinner == 'D'):
-                print("GAME OVER - DRAW");
+                print(">> GAME OVER - DRAW");
             else:
                 print(">> GAME OVER - WINNER: " + board.getWinner)
             return
@@ -27,7 +27,8 @@ class Solver:
             if board.isMoveLegal(movey, movex):
                 board.playMove(movey, movex, player)
                 board.displayMove(movex, movey, player, pygame, game_window)
-                break
+                return
+        print("Failed to find")
 
     def postomove(self, pos):
         return pos%9, math.floor(pos/9)
