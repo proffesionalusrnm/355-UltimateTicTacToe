@@ -168,6 +168,32 @@ class Board:
     #this function displays the move on the board and in the grid
     #input: ij as xy grid location, taken from getXYFromUser
     def displayMove(self, i, j, player,pg,screen):
+        boardi = int(i / 3)   # Use large board dimensions [0,1,2]x[0,1,2]
+        boardj = int(j / 3)
+        winner = self.grid[boardj, boardi].getWinner
+        if winner != '':
+            if winner == 'D':
+                winner = ''
+            font = pg.font.SysFont('Arial', 100)
+            width, height = font.size(player)
+            
+            smallWidth = self.WINDOW_WIDTH / 3
+            smallHeight = self.WINDOW_HEIGHT / 3
+            
+            x = boardi * smallWidth + (smallWidth - width) / 2
+            y = boardj * smallHeight + (smallHeight - height + 20) / 2
+            
+            rectLeft = boardi * smallWidth
+            rectTop = boardj * smallHeight
+            screen.fill((255,255,255), pg.Rect(rectLeft, rectTop, smallWidth, smallHeight))
+            pg.draw.line(screen,(0,0,0),[0,self.WINDOW_HEIGHT//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT//3],3)
+            pg.draw.line(screen,(0,0,0),[self.WINDOW_WIDTH//3,0],[self.WINDOW_WIDTH//3,self.WINDOW_HEIGHT],3)
+            pg.draw.line(screen,(0,0,0),[0,self.WINDOW_HEIGHT*2//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT*2//3],3)
+            pg.draw.line(screen,(0,0,0),[self.WINDOW_WIDTH*2//3,0],[self.WINDOW_WIDTH*2//3,self.WINDOW_HEIGHT],3)
+            textsurface = font.render(winner, False, (0, 0, 0))
+            screen.blit(textsurface,(x,y))
+            return
+            
         #set small width and small height
         smallWidth= self.WINDOW_WIDTH / 9
         smallHeight=self.WINDOW_HEIGHT / 9
