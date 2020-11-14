@@ -4,7 +4,7 @@ import sys
 from Objects import board
 #initialize game window and board
 pygame.init()
-gameBoard = board.Board()
+gameBoard = board.Board(False)
 
 
 
@@ -14,7 +14,8 @@ def main():
     game_window.fill((255,255,255))
     game_running = True
     pygame.display.set_caption("Ultimate Tic Tac Toe")
-
+    #initialize player
+    player = 'X'
     # Game loop
     gameBoard.displayBoard(pygame,game_window)
     while game_running:
@@ -30,15 +31,17 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     x,y = event.pos
-                    i,j = gameBoard.getPositionForGrid(x,y)
-                    ##call check if move is legal here
+                    newX,newY = gameBoard.getXYFromUser(x,y)
 
-                    #print move to terminal for reference
-                    print("Current move:",i,j)
-                    
-                    ##if move is legal then place move
-                    gameBoard.setPostionInGrid(i,j,"X",pygame,game_window)
-                    ##call check if win here
+                    if gameBoard.isMoveLegal(newY,newX):
+                        gameBoard.playMove(newY,newX,player)
+                        gameBoard.displayMove(newX,newY,player,pygame,game_window)
+                        if player=='X':
+                            player ='O'
+                        elif player=='O':
+                            player ='X'
+                    else:
+                        print("Illegal move, try again")
 
 
         # Update our display
