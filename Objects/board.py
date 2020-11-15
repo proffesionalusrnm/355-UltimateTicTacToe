@@ -45,6 +45,7 @@ class Board:
             self.grid = np.full((3, 3), '') # Initialize board with empty value
         else:
             self.grid = np.array([[Board(True) for i in range(3)] for j in range(3)])  # Initialize board with empty boards
+
     def displayBoard(self, pg, window):
        for row in self.grid:
            gridToPrint =str(row[0].grid)+str(row[1].grid)+str(row[2].grid)
@@ -165,6 +166,58 @@ class Board:
         gridY = math.floor(y/(smallHeight))
         return gridX, gridY
 
+    # input: xy pixel location of user mouse click example: (100px,100px)
+    # outputs: return the next position to be played by the current player based on the previous move
+    def checkPreviousMove(self, x, y):
+        nextBoard = [0,1,2,3,4,5,6,7,8] 
+        # 0-8 is to be corresponded to the big board position
+        # 0 = (0,0), 1 = (0,1), 2 = (0,2), 3 = (1,0), 4 = (1,1), 5 = (1,2)
+        # 6 = (2,0), 7 = (2,1), 8 = (2,2)
+
+        # checking condition for next board to play
+        if ( x % 3 == 1 and y % 3 == 0):
+            return nextBoard[1]
+        elif ( x % 3 == 0 and y % 3 == 0):
+            return nextBoard[0]
+        elif ( x % 3 == 2 and y % 3 == 0):
+            return nextBoard[2]
+        elif ( x % 3 == 0 and y % 3 == 1):
+            return nextBoard[3]
+        elif ( x % 3 == 1 and y % 3 == 1):
+            return nextBoard[4]
+        elif ( x % 3 == 2 and y % 3 == 1):
+            return nextBoard[5]
+        elif ( x % 3 == 0 and y % 3 == 2):
+            return nextBoard[6]
+        elif ( x % 3 == 1 and y % 3 == 2):
+            return nextBoard[7]
+        elif (x % 3 == 2 and y % 3 == 2):
+            return nextBoard[8]
+
+    # input: xy pixel location of user mouse click example: (100px,100px)
+    # outputs: return the current position to be played by the current player
+    def checkCurentPos(self, i, j):
+        # store current board position
+        if (0 <= i <= 2 and 0 <= j <= 2):
+            return 0
+        elif (0 <= i <= 2 and 3 <= j <= 5):
+            return 3
+        elif (0 <= i <= 2 and 6 <= j <= 8):
+            return 6
+        elif (3 <= i <= 5 and 0 <= j <= 2):
+            return 1
+        elif (3 <= i <= 5 and 3 <= j <= 5):
+            return 4
+        elif (3 <= i <= 5 and 6 <= j <= 8):
+            return 7
+        elif (6 <= i <= 8 and 0 <= j <= 2):
+            return 2
+        elif (6 <= i <= 8 and 3 <= j <= 5):
+            return 5
+        elif (6 <= i <= 8 and 6 <= j <= 8):
+            return 8
+
+
     #this function displays the move on the board and in the grid
     #input: ij as xy grid location, taken from getXYFromUser
     def displayMove(self, i, j, player,pg,screen):
@@ -206,3 +259,5 @@ class Board:
         font = pg.font.SysFont('Arial', 30)
         textsurface = font.render(player, False, (0, 0, 0))
         screen.blit(textsurface,(x,y))
+    
+
