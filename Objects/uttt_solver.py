@@ -5,7 +5,6 @@ import random
 class Solver:
     def __init__(self):
         print("Solver Initialized")
-
     
     def step(self, board, player, pygame, game_window):
         if (board.gameFinished):
@@ -23,7 +22,7 @@ class Solver:
             for offset in range(81):
                 currpos = ((randpos + offset) % 81)
                 movex, movey = self.valToMove(currpos, board, False)
-                print(f"ANY CELL: {currpos} -> [{movex}, {movey}]")
+                # print(f"ANY CELL: {currpos} -> [{movex}, {movey}]")
                 if board.fullPlay(movex, movey, player, pygame, game_window):
                     return
         else: # Play within allowed cell
@@ -31,7 +30,7 @@ class Solver:
             for offset in range(9):
                 currpos = ((randpos + offset) % 9)
                 movex, movey = self.valToMove(currpos, board, True)
-                print(f"CELL {board.nextPlay}: {currpos} -> [{movex}, {movey}]")
+                # print(f"CELL {board.nextPlay}: {currpos} -> [{movex}, {movey}]")
                 if board.fullPlay(movex, movey, player, pygame, game_window):
                     return
         print("Failed to find")

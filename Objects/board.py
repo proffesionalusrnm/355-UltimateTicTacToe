@@ -134,6 +134,7 @@ class Board:
                 self.nextPlay = 9
             else:
                 self.nextPlay = innerI * 3 + innerJ
+            print(f"{'X' if player == 'O' else 'O'} to play {f'in cell {self.nextPlay}' if (self.nextPlay < 9) else 'anywhere'}")
 
         self.gameFinished, self.getWinner = self.hasGameFinished()
 
