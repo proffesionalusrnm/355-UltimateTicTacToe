@@ -45,6 +45,7 @@ class Board:
             self.grid = np.full((3, 3), '') # Initialize board with empty value
         else:
             self.grid = np.array([[Board(True) for i in range(3)] for j in range(3)])  # Initialize board with empty boards
+            self.nextPlay = 9
     def displayBoard(self, pg, window):
        for row in self.grid:
            gridToPrint =str(row[0].grid)+str(row[1].grid)+str(row[2].grid)
@@ -65,6 +66,14 @@ class Board:
        pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT*2//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT*2//3],3)
        pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH*2//3,0],[self.WINDOW_WIDTH*2//3,self.WINDOW_HEIGHT],3)
 
+    def fullPlay(self, x, y, player, pygame, screen):
+        # Checks if the move is legal, if it is, play and display it
+        if (self.isMoveLegal(y, x)):
+            self.playMove(y, x, player)
+            self.displayMove(x, y, player, pygame, screen)
+            return True
+        else: 
+            return False
 
     def isMoveLegal(self, i, j):
         """Whether the given move is legal or not
@@ -92,12 +101,13 @@ class Board:
             # Compute i, j values for child board and call isMoveLegal
             parentI = int(i / 3)    # i, j values to access this board
             parentJ = int(j / 3)
+            if (self.nextPlay != 9 and self.nextPlay != parentI * 3 + parentJ):
+                return False
             innerI = i % 3    # i, j values to access child board
             innerJ = j % 3
             return self.grid[parentI, parentJ].isMoveLegal(innerI, innerJ)
 
     def playMove(self, i, j, player):
-
         """Plays the move on the board
 
         Plays the move on the board and sets the gameFinished and getWinner
@@ -120,6 +130,10 @@ class Board:
             innerI = i % 3    # i, j values to access child board
             innerJ = j % 3
             self.grid[parentI, parentJ].playMove(innerI, innerJ, player)
+            if (self.grid[innerI, innerJ].gameFinished):
+                self.nextPlay = 9
+            else:
+                self.nextPlay = innerI * 3 + innerJ
 
         self.gameFinished, self.getWinner = self.hasGameFinished()
 
@@ -167,7 +181,7 @@ class Board:
 
     #this function displays the move on the board and in the grid
     #input: ij as xy grid location, taken from getXYFromUser
-    def displayMove(self, i, j, player,pg,screen):
+    def displayMove(self, i, j, player, pg, screen):
         boardi = int(i / 3)   # Use large board dimensions [0,1,2]x[0,1,2]
         boardj = int(j / 3)
         winner = self.grid[boardj, boardi].getWinner
