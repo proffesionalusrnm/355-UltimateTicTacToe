@@ -32,14 +32,8 @@ def main():
                 if event.button == 1:
                     x,y = event.pos
                     newX,newY = gameBoard.getXYFromUser(x,y)
-
-                    if gameBoard.isMoveLegal(newY,newX):
-                        gameBoard.playMove(newY,newX,player)
-                        gameBoard.displayMove(newX,newY,player,pygame,game_window)
-                        if player=='X':
-                            player ='O'
-                        elif player=='O':
-                            player ='X'
+                    if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
+                        player = 'X' if player == 'O' else 'O'
                     else:
                         print("Illegal move, try again")
                 elif event.button == 3: #right mouse button
@@ -48,8 +42,6 @@ def main():
 
         # Update our display
         pygame.display.update()
-
-
 
 if __name__ == '__main__':
     main()
