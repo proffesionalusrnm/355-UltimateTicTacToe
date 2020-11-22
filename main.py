@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import pygame
+import time
 import sys
 from Objects import board
 from Objects import uttt_solver as solver
@@ -8,7 +9,7 @@ pygame.init()
 gameBoard = board.Board(False)
 gameSolver = solver.Solver()
 
-def main():
+def main(usingSolver):
     # Create a game window
     game_window = pygame.display.set_mode((gameBoard.WINDOW_WIDTH, gameBoard.WINDOW_HEIGHT))
     game_window.fill((255,255,255))
@@ -34,14 +35,21 @@ def main():
                     newX,newY = gameBoard.getXYFromUser(x,y)
                     if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
                         player = 'X' if player == 'O' else 'O'
+                        if(usingSolver):
+                            gameSolver.step(gameBoard, player, pygame, game_window)
+                            player = 'X' if player == 'O' else 'O'
                     else:
                         print("Illegal move, try again")
-                elif event.button == 3: #right mouse button
-                    gameSolver.step(gameBoard, player, pygame, game_window)
-                    player = 'X' if player == 'O' else 'O'
+
 
         # Update our display
         pygame.display.update()
 
 if __name__ == '__main__':
-    main()
+    for arg in sys.argv[1:]:
+        if arg=="t":
+            main(True)
+            print("You are playing against our solver")
+        else:
+            main(False)
+            print("You are playing against another person")
