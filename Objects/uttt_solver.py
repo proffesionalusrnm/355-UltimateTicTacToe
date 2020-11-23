@@ -12,9 +12,8 @@ class Solver:
                 print(">> GAME OVER - DRAW");
             else:
                 print(">> GAME OVER - WINNER: " + board.getWinner)
-            return
-        self.randMove(board, player, pygame, game_window)
-    
+        return self.randMove(board, player, pygame, game_window)
+        
     # Random Legal move selection
     def randMove(self, board, player, pygame, game_window):
         if (board.nextPlay == 9): # Play anywhere
@@ -24,7 +23,7 @@ class Solver:
                 movex, movey = self.valToMove(currpos, board, False)
                 # print(f"ANY CELL: {currpos} -> [{movex}, {movey}]")
                 if board.fullPlay(movex, movey, player, pygame, game_window):
-                    return
+                    return movex,movey
         else: # Play within allowed cell
             randpos = random.randint(0,8)
             for offset in range(9):
@@ -32,7 +31,7 @@ class Solver:
                 movex, movey = self.valToMove(currpos, board, True)
                 # print(f"CELL {board.nextPlay}: {currpos} -> [{movex}, {movey}]")
                 if board.fullPlay(movex, movey, player, pygame, game_window):
-                    return
+                    return movex, movey
         print("Failed to find")
 
     def valToMove(self, pos, board, inner):

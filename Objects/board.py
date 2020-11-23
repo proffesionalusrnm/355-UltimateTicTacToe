@@ -46,25 +46,37 @@ class Board:
         else:
             self.grid = np.array([[Board(True) for i in range(3)] for j in range(3)])  # Initialize board with empty boards
             self.nextPlay = 9
+
     def displayBoard(self, pg, window):
-       for row in self.grid:
+        for row in self.grid:
            gridToPrint =str(row[0].grid)+str(row[1].grid)+str(row[2].grid)
            print(gridToPrint.replace("\n",""))
-       smallWidth= self.WINDOW_WIDTH / self.rows
-       smallHeight=self.WINDOW_HEIGHT / self.rows
 
-       #loop to make small tic tac toe boards
-       for i in range(self.rows):
+        smallWidth= self.WINDOW_WIDTH / self.rows
+        smallHeight=self.WINDOW_HEIGHT / self.rows
+
+
+        #loop to make small tic tac toe boards
+        for i in range(self.rows):
            #print vertical lines
            pg.draw.line(window,(165,167,182),[smallWidth+smallWidth*i,0],[smallWidth+smallWidth*i,self.WINDOW_HEIGHT],2)
            #print horizontal lines
            pg.draw.line(window,(165,167,182),[0,smallHeight+smallHeight*i],[self.WINDOW_WIDTH,smallHeight+smallHeight*i],2)
 
-       # Make large tic tac to board on top
-       pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT//3],3)
-       pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH//3,0],[self.WINDOW_WIDTH//3,self.WINDOW_HEIGHT],3)
-       pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT*2//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT*2//3],3)
-       pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH*2//3,0],[self.WINDOW_WIDTH*2//3,self.WINDOW_HEIGHT],3)
+        # Make large tic tac to board on top
+        self.drawEdges(pg, window)
+
+    # function to draw the edges of the big board
+    # input: pygame and the game window
+    def drawEdges(self, pg, window):
+        pg.draw.line(window,(0,0,0),[0,0],[self.WINDOW_WIDTH,0],5) # top edge
+        pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT],5) # bottom edge
+        pg.draw.line(window,(0,0,0),[0,0],[0,self.WINDOW_HEIGHT],5) # right edge
+        pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH, 0],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT],5) # left edge
+        pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT//3],3)
+        pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH//3,0],[self.WINDOW_WIDTH//3,self.WINDOW_HEIGHT],3)
+        pg.draw.line(window,(0,0,0),[0,self.WINDOW_HEIGHT*2//3],[self.WINDOW_WIDTH,self.WINDOW_HEIGHT*2//3],3)
+        pg.draw.line(window,(0,0,0),[self.WINDOW_WIDTH*2//3,0],[self.WINDOW_WIDTH*2//3,self.WINDOW_HEIGHT],3)
 
     def fullPlay(self, x, y, player, pygame, screen):
         # Checks if the move is legal, if it is, play and display it
@@ -180,6 +192,9 @@ class Board:
         gridY = math.floor(y/(smallHeight))
         return gridX, gridY
 
+
+
+
     #this function displays the move on the board and in the grid
     #input: ij as xy grid location, taken from getXYFromUser
     def displayMove(self, i, j, player, pg, screen):
@@ -221,3 +236,4 @@ class Board:
         font = pg.font.SysFont('Arial', 30)
         textsurface = font.render(player, False, (0, 0, 0))
         screen.blit(textsurface,(x,y))
+    
