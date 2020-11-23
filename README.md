@@ -9,4 +9,7 @@ Group Members:
 
 
 
-To run game type python3 main.py in terminal
+Instructions to play:
+
+If you would like to play against the computer, type python3 main.py in the terminal.
+If you would like to play against another person, type python3 main.py -t in the terminal.
