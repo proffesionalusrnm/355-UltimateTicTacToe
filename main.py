@@ -1,32 +1,59 @@
 #!/usr/bin/env python3
 import pygame
 import sys
+import time
 from Objects import board
 from Objects import uttt_solver as solver
+
+
+# constants
+WINDOW_HEIGHT = 700
+WINDOW_WIDTH = 600
+
 #initialize game window and board
 pygame.init()
 gameBoard = board.Board(False)
 gameSolver = solver.Solver()
+font = pygame.font.SysFont('comicsansms', 25)
+
+# Create a game window
+game_window = pygame.display.set_mode((gameBoard.WINDOW_WIDTH, gameBoard.WINDOW_HEIGHT + 50))
+game_window.fill((255,255,255))
+pygame.display.set_caption("Ultimate Tic Tac Toe")
+      
+# function to highlight the next move to play
+def displayNextMove(X, Y):
+    gameBoard.drawEdges(pygame,game_window)
+    rect = pygame.Rect((X % 3) * (WINDOW_WIDTH/3) , (Y % 3) * (WINDOW_HEIGHT/3), WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3)
+    pygame.draw.rect(game_window, (0,255,255), rect, 2)
+
+
+
+# function to display the result after the game is finished
+def displayResult():
+    gameBoard.drawEdges(pygame,game_window)
+    if (gameBoard.getWinner != 'D'):
+        winner = font.render("Congratulation, Player " + gameBoard.getWinner + " wins the game!", True, (0,0,0))
+        game_window.blit(winner, (70, WINDOW_HEIGHT + 15))
+    else:
+        winner = font.render("This game is a draw!", True, (0,0,0))
+        game_window.blit(winner, (175, WINDOW_HEIGHT + 15))
 
 def main():
-    # Create a game window
-    game_window = pygame.display.set_mode((gameBoard.WINDOW_WIDTH, gameBoard.WINDOW_HEIGHT))
-    game_window.fill((255,255,255))
+    # game status
     game_running = True
-    pygame.display.set_caption("Ultimate Tic Tac Toe")
     
     #initialize player
     player = 'X'
-    freeMove = True # can move anywhere on the board
 
     gameBoard.displayBoard(pygame,game_window) # display the board
+
 
     # Game loop
     while game_running:
         BigBoardFinished = gameBoard.gameFinished
         if (BigBoardFinished):
-            game_running = False
-            print("Congratulation, Player " + gameBoard.getWinner + " wins the game!")
+            displayResult()
         # Loop through all active events
         for event in pygame.event.get():
             # Close the program if the user presses the 'X'
@@ -40,55 +67,22 @@ def main():
                 if event.button == 1:
                     x,y = event.pos
                     newX,newY = gameBoard.getXYFromUser(x,y)
-                    currentBoard = gameBoard.checkCurentPos(newX,newY) # current position of the player
-                    InnerBoardFinished = gameBoard.grid[int(newY/3), int(newX/3)].gameFinished # status of the inner board
-                    if freeMove: # can move anywhere on the board
-                        # play the game 
-                        if (gameBoard.isMoveLegal(newY,newX) and not InnerBoardFinished):
-                            gameBoard.playMove(newY,newX,player)
-                            gameBoard.displayMove(newX,newY,player,pygame,game_window)
-                            finished = gameBoard.gameFinished
-                            if player=='X':
-                                player ='O'
-                            elif player=='O':
-                                player ='X'
-                            freeMove = False
-                            # store next board position to play next turn
-                            nextBoard = gameBoard.checkPreviousMove(newX, newY)
-                        elif (not gameBoard.isMoveLegal(newY,newX) and not InnerBoardFinished):
-                            print("Illegal move, try again")
-                        elif (not gameBoard.isMoveLegal(newY,newX) and InnerBoardFinished):
-                            print("This board is finished, please play at another board")
-                            freeMove = True
-
-                    else: # must move according to the rule
-                        # check for validity
-                        if (currentBoard != nextBoard):
-                            print("You are not playing in the correct board, try again")
-                        elif (currentBoard == nextBoard and not InnerBoardFinished):
-                            # play the game
-                            if (gameBoard.isMoveLegal(newY, newX)):
-                                gameBoard.playMove(newY,newX,player)
-                                gameBoard.displayMove(newX,newY,player,pygame,game_window)
-                                if player=='X':
-                                    player ='O'
-                                elif player=='O':
-                                    player ='X'
-                                # store next board position to play next turn
-                                nextBoard = gameBoard.checkPreviousMove(newX, newY)
-                            elif (not gameBoard.isMoveLegal(newY, newX) and not InnerBoardFinished):
-                                print("Illegal move, try again")
-                        elif (currentBoard == nextBoard and InnerBoardFinished):
-                            print("This board is finished, please play at another board")
-                            freeMove = True
-
+                    if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
+                        player = 'X' if player == 'O' else 'O'
+                        if (gameBoard.nextPlay != 9):
+                            displayNextMove(newX, newY)
+                    else:
+                        print("Illegal move, try again")
                 elif event.button == 3: #right mouse button
-                    gameSolver.step(gameBoard, player, pygame, game_window)
+                    moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
                     player = 'X' if player == 'O' else 'O'
+                    if (gameBoard.nextPlay != 9):
+                        displayNextMove(moveX, moveY)
 
-        # Update our display
+
+        # update display
         pygame.display.update()
-
+    
 
 
 if __name__ == '__main__':

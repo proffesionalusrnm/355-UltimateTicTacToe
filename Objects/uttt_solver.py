@@ -5,29 +5,42 @@ import random
 class Solver:
     def __init__(self):
         print("Solver Initialized")
-
+    
     def step(self, board, player, pygame, game_window):
-        # TODO: Random Legal Move Selection
-        # Simple solution: game is 9x9 grid = 81 spaces
-        # Pick random number 0 - 80, tie it to a position
-        # If it's a legal move, do it 
-        # If not, increment by one and try again (looping to 0 once you hit 80)
-        # If you return to your original number, break (board is filled)
         if (board.gameFinished):
             if (board.getWinner == 'D'):
-                print("GAME OVER - DRAW");
+                print(">> GAME OVER - DRAW");
             else:
                 print(">> GAME OVER - WINNER: " + board.getWinner)
             return
-        randpos = random.randint(0,80)
-        for offset in range(81):
-            currpos = ((randpos + offset) % 81)
-            movex, movey = self.postomove(currpos)
-            #print(f"{currpos} -> [{movex}, {movey}]")
-            if board.isMoveLegal(movey, movex):
-                board.playMove(movey, movex, player)
-                board.displayMove(movex, movey, player, pygame, game_window)
-                break
+        return self.randMove(board, player, pygame, game_window)
+        
+    # Random Legal move selection
+    def randMove(self, board, player, pygame, game_window):
+        if (board.nextPlay == 9): # Play anywhere
+            randpos = random.randint(0,80)
+            for offset in range(81):
+                currpos = ((randpos + offset) % 81)
+                movex, movey = self.valToMove(currpos, board, False)
+                # print(f"ANY CELL: {currpos} -> [{movex}, {movey}]")
+                if board.fullPlay(movex, movey, player, pygame, game_window):
+                    return movex,movey
+        else: # Play within allowed cell
+            randpos = random.randint(0,8)
+            for offset in range(9):
+                currpos = ((randpos + offset) % 9)
+                movex, movey = self.valToMove(currpos, board, True)
+                # print(f"CELL {board.nextPlay}: {currpos} -> [{movex}, {movey}]")
+                if board.fullPlay(movex, movey, player, pygame, game_window):
+                    return movex, movey
+        print("Failed to find")
 
-    def postomove(self, pos):
-        return pos%9, math.floor(pos/9)
+    def valToMove(self, pos, board, inner):
+        if (inner):
+            return (pos%3 + 3*(board.nextPlay%3)), (math.floor(pos/3) + 3*(math.floor(board.nextPlay/3)))
+        else:
+            return pos%9, math.floor(pos/9)
+        
+    def ABminimax(self, depth, board, player, move, a, b):
+        # Need some temporary representations of the board object
+        return
