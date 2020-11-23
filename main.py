@@ -30,15 +30,15 @@ def displayNextMove(X, Y):
         pygame.draw.rect(game_window, (0,255,255), rect, 2)
 
 # function to display the guide for the player
-def displayGuide():
+def displayGuide(player):
     game_window.fill((255,255,255), (0, WINDOW_HEIGHT+10, WINDOW_WIDTH, 50))
 
     if (gameBoard.nextPlay != 9):
-        guide = font.render("Player can play in the highlighted board!", True, (0,0,0), (255,255,255))
+        guide = font.render("Player " + player + " can play in the highlighted board!", True, (0,0,0), (255,255,255))
         game_window.blit(guide, (70, WINDOW_HEIGHT + 10))
 
     else:
-        guide = font.render("Player can play anywhere!", True, (0,0,0), (255,255,255)) 
+        guide = font.render("Player " + player + " can play anywhere!", True, (0,0,0), (255,255,255)) 
         game_window.blit(guide, (150, WINDOW_HEIGHT + 10))
 
 
@@ -83,17 +83,19 @@ def main(usingSolver):
                     x,y = event.pos
                     newX,newY = gameBoard.getXYFromUser(x,y)
                     if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
-                        displayGuide()
                         player = 'X' if player == 'O' else 'O'
-                        displayNextMove(newX, newY)
+                        if (not gameBoard.gameFinished):
+                            displayGuide(player)
+                            displayNextMove(newX, newY)
                         pygame.display.update()
                         if(usingSolver):
                             try:
                                 pygame.time.wait(800)
                                 moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
                                 player = 'X' if player == 'O' else 'O'
-                                displayGuide()
-                                displayNextMove(moveX, moveY)
+                                if (not gameBoard.gameFinished):
+                                    displayGuide(player)
+                                    displayNextMove(moveX, moveY)
                                 pygame.display.update()
                             except Exception:
                                 continue
