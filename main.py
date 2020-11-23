@@ -25,20 +25,34 @@ pygame.display.set_caption("Ultimate Tic Tac Toe")
 # function to highlight the next move to play
 def displayNextMove(X, Y):
     gameBoard.drawEdges(pygame,game_window)
-    rect = pygame.Rect((X % 3) * (WINDOW_WIDTH/3) , (Y % 3) * (WINDOW_HEIGHT/3), WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3)
-    pygame.draw.rect(game_window, (0,255,255), rect, 2)
+    if (gameBoard.nextPlay != 9):
+        rect = pygame.Rect((X % 3) * (WINDOW_WIDTH/3) , (Y % 3) * (WINDOW_HEIGHT/3), WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3)
+        pygame.draw.rect(game_window, (0,255,255), rect, 2)
 
+# function to display the guide for the player
+def displayGuide():
+    game_window.fill((255,255,255), (0, WINDOW_HEIGHT+10, WINDOW_WIDTH, 50))
+
+    if (gameBoard.nextPlay != 9):
+        guide = font.render("Player can play in the highlighted board!", True, (0,0,0), (255,255,255))
+        game_window.blit(guide, (70, WINDOW_HEIGHT + 10))
+
+    else:
+        guide = font.render("Player can play anywhere!", True, (0,0,0), (255,255,255)) 
+        game_window.blit(guide, (150, WINDOW_HEIGHT + 10))
 
 
 # function to display the result after the game is finished
 def displayResult():
     gameBoard.drawEdges(pygame,game_window)
+    game_window.fill((255,255,255), (0, WINDOW_HEIGHT+10, WINDOW_WIDTH, 50))
+
     if (gameBoard.getWinner != 'D'):
         winner = font.render("Congratulation, Player " + gameBoard.getWinner + " wins the game!", True, (0,0,0))
-        game_window.blit(winner, (70, WINDOW_HEIGHT + 15))
+        game_window.blit(winner, (70, WINDOW_HEIGHT + 10))
     else:
         winner = font.render("This game is a draw!", True, (0,0,0))
-        game_window.blit(winner, (175, WINDOW_HEIGHT + 15))
+        game_window.blit(winner, (175, WINDOW_HEIGHT + 10))
 
 def main(usingSolver):
 
@@ -49,7 +63,6 @@ def main(usingSolver):
 
     gameBoard.displayBoard(pygame,game_window) # display the board
 
-
     # Game loop
     while game_running:
         BigBoardFinished = gameBoard.gameFinished
@@ -58,6 +71,7 @@ def main(usingSolver):
         # Loop through all active events
         for event in pygame.event.get():
             # Close the program if the user presses the 'X'
+            
             if event.type == pygame.QUIT:
                 game_running = False
                 # Uninitialize all pygame modules and quit the program
@@ -69,18 +83,18 @@ def main(usingSolver):
                     x,y = event.pos
                     newX,newY = gameBoard.getXYFromUser(x,y)
                     if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
+                        displayGuide()
                         player = 'X' if player == 'O' else 'O'
-                        if (gameBoard.nextPlay != 9):
-                            displayNextMove(newX, newY)
+                        displayNextMove(newX, newY)
                         pygame.display.update()
                         if(usingSolver):
                             try:
-                                pygame.time.wait(500)
+                                pygame.time.wait(800)
                                 moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
                                 player = 'X' if player == 'O' else 'O'
-                                if (gameBoard.nextPlay != 9):
-                                    displayNextMove(moveX, moveY)
-                                    pygame.display.update()
+                                displayGuide()
+                                displayNextMove(moveX, moveY)
+                                pygame.display.update()
                             except Exception:
                                 continue
                     else:
