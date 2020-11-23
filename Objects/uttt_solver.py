@@ -33,6 +33,7 @@ class Solver:
                 if board.fullPlay(movex, movey, player, pygame, game_window):
                     return movex, movey
         print("Failed to find")
+        return
 
     def valToMove(self, pos, board, inner):
         if (inner):
