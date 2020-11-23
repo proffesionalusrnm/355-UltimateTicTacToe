@@ -74,12 +74,15 @@ def main(usingSolver):
                             displayNextMove(newX, newY)
                         pygame.display.update()
                         if(usingSolver):
-                            pygame.time.wait(500)
-                            moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
-                            player = 'X' if player == 'O' else 'O'
-                            if (gameBoard.nextPlay != 9):
-                                displayNextMove(moveX, moveY)
-                                pygame.display.update()
+                            try:
+                                pygame.time.wait(500)
+                                moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
+                                player = 'X' if player == 'O' else 'O'
+                                if (gameBoard.nextPlay != 9):
+                                    displayNextMove(moveX, moveY)
+                                    pygame.display.update()
+                            except Exception:
+                                continue
                     else:
                         print("Illegal move, try again")
 
