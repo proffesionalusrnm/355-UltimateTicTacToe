@@ -35,7 +35,9 @@ def main(usingSolver):
                     newX,newY = gameBoard.getXYFromUser(x,y)
                     if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
                         player = 'X' if player == 'O' else 'O'
+                        pygame.display.update()
                         if(usingSolver):
+                            pygame.time.wait(500)
                             gameSolver.step(gameBoard, player, pygame, game_window)
                             player = 'X' if player == 'O' else 'O'
                     else:
@@ -46,10 +48,13 @@ def main(usingSolver):
         pygame.display.update()
 
 if __name__ == '__main__':
-    for arg in sys.argv[1:]:
-        if arg=="t":
-            main(True)
-            print("You are playing against our solver")
-        else:
-            main(False)
+
+        if len(sys.argv) > 1:
             print("You are playing against another person")
+            main(False)
+        elif not len(sys.argv) > 1:
+            print("You are playing against our solver")
+            main(True)
+        else:
+            print("You are playing against our solver")
+            main(True)
