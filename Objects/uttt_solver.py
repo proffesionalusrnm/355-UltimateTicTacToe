@@ -12,7 +12,6 @@ class Solver:
                 print(">> GAME OVER - DRAW");
             else:
                 print(">> GAME OVER - WINNER: " + board.getWinner)
-            return
         return self.randMove(board, player, pygame, game_window)
         
     # Random Legal move selection
