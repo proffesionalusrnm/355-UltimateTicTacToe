@@ -54,6 +54,14 @@ def displayResult():
         winner = font.render("This game is a draw!", True, (0,0,0))
         game_window.blit(winner, (175, WINDOW_HEIGHT + 10))
 
+# function to handle display action
+def displayController(x, y, player, finished):
+    if (not finished):
+        displayGuide(player)
+        displayNextMove(x, y)
+    else:
+        displayResult()
+
 def main(usingSolver):
 
     game_running = True
@@ -62,12 +70,10 @@ def main(usingSolver):
     player = 'X'
 
     gameBoard.displayBoard(pygame,game_window) # display the board
+    displayGuide(player)
 
     # Game loop
     while game_running:
-        BigBoardFinished = gameBoard.gameFinished
-        if (BigBoardFinished):
-            displayResult()
         # Loop through all active events
         for event in pygame.event.get():
             # Close the program if the user presses the 'X'
@@ -84,18 +90,14 @@ def main(usingSolver):
                     newX,newY = gameBoard.getXYFromUser(x,y)
                     if gameBoard.fullPlay(newX,newY,player,pygame,game_window):
                         player = 'X' if player == 'O' else 'O'
-                        if (not gameBoard.gameFinished):
-                            displayGuide(player)
-                            displayNextMove(newX, newY)
+                        displayController(newX, newY, player, gameBoard.gameFinished)
                         pygame.display.update()
                         if(usingSolver):
                             try:
                                 pygame.time.wait(800)
                                 moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
                                 player = 'X' if player == 'O' else 'O'
-                                if (not gameBoard.gameFinished):
-                                    displayGuide(player)
-                                    displayNextMove(moveX, moveY)
+                                displayController(moveX, moveY, player, gameBoard.gameFinished)
                                 pygame.display.update()
                             except Exception:
                                 continue
