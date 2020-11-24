@@ -34,13 +34,14 @@ class Board:
     """
 
 
-    def __init__(self, innerGrid):
+    def __init__(self, innerGrid, shouldPrint=True):
         self.isInnerGrid = innerGrid
         self.gameFinished = False
         self.getWinner = ''
         self.rows = 9
         self.WINDOW_HEIGHT = 700
         self.WINDOW_WIDTH = 600
+        self.shouldPrint = shouldPrint
         if innerGrid:
             self.grid = np.full((3, 3), '') # Initialize board with empty value
         else:
@@ -146,7 +147,7 @@ class Board:
                 self.nextPlay = 9
             else:
                 self.nextPlay = innerI * 3 + innerJ
-            print(f"{'X' if player == 'O' else 'O'} to play {f'in cell {self.nextPlay}' if (self.nextPlay < 9) else 'anywhere'}")
+            if self.shouldPrint: print(f"{'X' if player == 'O' else 'O'} to play {f'in cell {self.nextPlay}' if (self.nextPlay < 9) else 'anywhere'}")
 
         self.gameFinished, self.getWinner = self.hasGameFinished()
 
