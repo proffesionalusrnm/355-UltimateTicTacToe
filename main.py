@@ -4,7 +4,7 @@ import time
 import sys
 import time
 from Objects import board
-from Objects import uttt_solver as solver
+from Objects.heuristic_solver import Solver
 
 
 # constants
@@ -14,7 +14,7 @@ WINDOW_WIDTH = 600
 #initialize game window and board
 pygame.init()
 gameBoard = board.Board(False)
-gameSolver = solver.Solver()
+gameSolver = Solver()
 font = pygame.font.SysFont('comicsansms', 25)
 
 # Create a game window
@@ -95,7 +95,8 @@ def main(usingSolver):
                         if(usingSolver):
                             try:
                                 pygame.time.wait(800)
-                                moveX, moveY = gameSolver.step(gameBoard, player, pygame, game_window)
+                                moveX, moveY = gameSolver.step(gameBoard, player)
+                                gameBoard.fullPlay(moveX,moveY,player,pygame,game_window)
                                 player = 'X' if player == 'O' else 'O'
                                 displayController(moveX, moveY, player, gameBoard.gameFinished)
                                 pygame.display.update()
