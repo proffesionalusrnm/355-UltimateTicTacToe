@@ -2,7 +2,6 @@
 import pygame
 import time
 import sys
-import time
 from Objects import board
 from Objects.heuristic_solver import Solver
 from Objects.uttt_solver import Solver as RandomSolver
@@ -76,11 +75,18 @@ def main(mode):
 
     gameBoard.displayBoard(pygame,game_window) # display the board
     displayGuide(player)
-
+    pygame.display.update()
     # Game loop
     while game_running:
         # Play the two solvers against each other
         if mode == 'solvers':
+            for event in pygame.event.get():
+                # Close the program if the user presses the 'X'
+                if event.type == pygame.QUIT:
+                    game_running = False
+                    # Uninitialize all pygame modules and quit the program
+                    pygame.quit()
+                    sys.exit()
             pygame.time.wait(800)
             if lastToPlay == 'random':
                 moveX, moveY = gameSolver.step(gameBoard, player)
@@ -104,6 +110,8 @@ def main(mode):
                 # Uninitialize all pygame modules and quit the program
                 pygame.quit()
                 sys.exit()
+            
+
                
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
