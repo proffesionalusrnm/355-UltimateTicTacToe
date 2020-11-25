@@ -75,7 +75,7 @@ def main(mode):
 
     gameBoard.displayBoard(pygame,game_window) # display the board
     displayGuide(player)
-
+    pygame.display.update()
     # Game loop
     while game_running:
         # Play the two solvers against each other
