@@ -9,7 +9,14 @@ Group Members:
 
 
 
-Instructions to play:
+## Instructions to play:
+There are four different game modes: Player vs Player, Player vs Random Solver, Player vs Minimax Solver, and Minimax Solver vs Random Solver
+- To play Player vs Minimax Solver, in the terminal, type:
+`python3 main.py`
+- To play Player vs Player, type:
+`python3 main.py player`
+- To play Player vs Random Solver, type:
+`python3 main.py random`
+- To play Minimax Solver vs Random Solver, type:
+`python3 main.py solvers`
 
-If you would like to play against the computer, type python3 main.py in the terminal.
-If you would like to play against another person, type python3 main.py -t in the terminal.

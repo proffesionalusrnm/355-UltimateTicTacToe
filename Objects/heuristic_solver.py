@@ -22,7 +22,7 @@ class Solver:
     def __init__(self):
         self.maxDepth = 2
         self.DEBUG = False
-        print("Solver Initialized. Max depth: ", self.maxDepth)
+        print("Minimax Solver Initialized. Max depth: ", self.maxDepth)
         
     def step(self, board, player):
         """Get the next best move for this player

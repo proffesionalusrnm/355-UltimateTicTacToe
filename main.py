@@ -5,16 +5,16 @@ import sys
 import time
 from Objects import board
 from Objects.heuristic_solver import Solver
+from Objects.uttt_solver import Solver as RandomSolver
 
 
 # constants
 WINDOW_HEIGHT = 700
 WINDOW_WIDTH = 600
 
-#initialize game window and board
+# initialize game window and board
 pygame.init()
 gameBoard = board.Board(False)
-gameSolver = Solver()
 font = pygame.font.SysFont('comicsansms', 25)
 
 # Create a game window
@@ -62,9 +62,14 @@ def displayController(x, y, player, finished):
     else:
         displayResult()
 
-def main(usingSolver):
-
+def main(mode):
+    if mode == 'solver' or mode == 'solvers':
+        gameSolver = Solver()
+    if mode == 'random' or mode == 'solvers':
+        randomSolver = RandomSolver()
+    
     game_running = True
+    lastToPlay = 'random'
 
     #initialize player
     player = 'X'
@@ -74,6 +79,22 @@ def main(usingSolver):
 
     # Game loop
     while game_running:
+        # Play the two solvers against each other
+        if mode == 'solvers':
+            pygame.time.wait(800)
+            if lastToPlay == 'random':
+                moveX, moveY = gameSolver.step(gameBoard, player)
+            else:
+                moveX, moveY = randomSolver.step(gameBoard, player)
+            gameBoard.fullPlay(moveX,moveY,player,pygame,game_window)
+            player = 'X' if player == 'O' else 'O'
+            displayController(moveX, moveY, player, gameBoard.gameFinished)
+            pygame.display.update()
+            lastToPlay = 'solver' if lastToPlay == 'random' else 'random'
+            game_running = not gameBoard.gameFinished
+            continue
+            
+        # Play against solver or random solver or another player
         # Loop through all active events
         for event in pygame.event.get():
             # Close the program if the user presses the 'X'
@@ -83,7 +104,7 @@ def main(usingSolver):
                 # Uninitialize all pygame modules and quit the program
                 pygame.quit()
                 sys.exit()
-
+               
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     x,y = event.pos
@@ -92,33 +113,50 @@ def main(usingSolver):
                         player = 'X' if player == 'O' else 'O'
                         displayController(newX, newY, player, gameBoard.gameFinished)
                         pygame.display.update()
-                        if(usingSolver):
-                            try:
-                                pygame.time.wait(800)
+                        if gameBoard.gameFinished:
+                            game_running = False
+                            break
+                        if(mode != 'player'):
+                            pygame.time.wait(800)
+                            if mode == 'random':
+                                moveX, moveY = randomSolver.step(gameBoard, player)
+                            else:
                                 moveX, moveY = gameSolver.step(gameBoard, player)
-                                gameBoard.fullPlay(moveX,moveY,player,pygame,game_window)
-                                player = 'X' if player == 'O' else 'O'
-                                displayController(moveX, moveY, player, gameBoard.gameFinished)
-                                pygame.display.update()
-                            except Exception:
-                                continue
+                            gameBoard.fullPlay(moveX,moveY,player,pygame,game_window)
+                            player = 'X' if player == 'O' else 'O'
+                            displayController(moveX, moveY, player, gameBoard.gameFinished)
+                            pygame.display.update()
+                            if gameBoard.gameFinished:
+                                game_running = False
+                                break
                     else:
                         print("Illegal move, try again")
 
 
         # update display
         pygame.display.update()
+    
+    # Wait for user to end the program
+    waitingForExit = True
+    while waitingForExit:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_running = False
+                # Uninitialize all pygame modules and quit the program
+                pygame.quit()
+                sys.exit() 
 
 
 
 if __name__ == '__main__':
-
-        if len(sys.argv) > 1:
-            print("You are playing against another person")
-            main(False)
-        elif not len(sys.argv) > 1:
-            print("You are playing against our solver")
-            main(True)
+    if len(sys.argv) == 2:
+        if sys.argv[1] == 'player':
+            main('player')
+        elif sys.argv[1] == 'random':
+            main('random')
+        elif sys.argv[1] == 'solvers':
+            main('solvers')
         else:
-            print("You are playing against our solver")
-            main(True)
+            print("Correct arguments: player, random, solvers")
+    else:
+        main('solver')
